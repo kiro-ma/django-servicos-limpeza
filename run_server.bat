@@ -1,0 +1,1 @@
+cmd /k "cd limpeza-venv/Scripts && activate && cd../../"
