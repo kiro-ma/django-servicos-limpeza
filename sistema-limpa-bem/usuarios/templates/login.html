@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    <title>Limpa Bem</title>
+</head>
+
+<body style="background-color: #333;">
+    <div class="col-sm-10 col-md-4 col-lg-4">
+        <div class="card ">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Entrar</h6>
+            </div>
+            <div class="card-body" style="transition: height;">
+                {% if login_error %}
+                <div class="alert danger-alert" id="pswrd-alert">
+                    <p style="margin: auto;">Usuário ou senha inválidos</p>
+                    <a class="alert_close"
+                        onclick="document.getElementById('pswrd-alert').classList.add('hidden');">X</a>
+                </div>
+                {% endif %}
+                <form action="{% url 'login' %}" method="post" id="form">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <input type="text" onkeyup="limparSenhaAlert()" class="form-control form-control-sm"
+                                id="usuario" placeholder="Usuário" name="username">
+                        </div>
+
+                        <div class="form-group col-12">
+                            <input type="password" onkeyup="limparSenhaAlert()" class="form-control form-control-sm"
+                                id="senha" placeholder="Senha" name="senha">
+                        </div>
+
+                        <div class="col-12">
+                            <p class="text-danger" id="alert-senha" style="display: none;">Usuário ou senha
+                                inválidos.
+                            </p>
+                        </div>
+
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary btn-block" onclick="login();"
+                                value="Logar">Entrar</button>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="{% url 'login' %}" class="btn btn-danger btn-block">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+{% block javascript %}
+<script src="{% static 'js/login.js' %}"></script>
+<script>
+    // if (window.performance) {
+    // 	console.info("window.performance works fine on this browser");
+    // }
+    // console.info(performance.navigation.type);
+    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+        // console.log('This page has been reloaded')
+        window.location.href = ''
+    }
+	//  else {
+	// 	console.info("This page is not reloaded");
+	// }
+</script>
+{% endblock %}
