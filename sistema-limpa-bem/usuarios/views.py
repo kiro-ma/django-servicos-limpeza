@@ -9,6 +9,53 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import user_passes_test
 
+# def getUsuarios(request):
+#     if request.method == 'GET':
+#         usuarios = Usuario.objects.all()
+#         lista_de_usuarios = []
+#         for usuario in usuarios:
+#             dados = {
+#                 'nome': usuario.first_name,
+#                 'userID': usuario.username
+#             }
+#             lista_de_usuarios.append(dados)
+
+#     return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
+
+
+# def getUsuario(request, username):
+#     if request.method == 'GET':
+#         query = Usuario.objects.filter(username=username).get()
+#         userDict = {
+#             'nome': query.first_name,
+#             'username': query.username,
+#             'cpf': query.cpf,
+#             'funcao': query.funcao,
+#             'email': query.email,
+#             'dataAdmissao': query.dataAdmissao,
+#             'assinaDoc': query.snassina,
+#             'avisaEstoque': query.bitAvisaEstoqueMinimo,
+#             'avisaTeto': query.bitAvisaTetoConstitucional,
+#             'is_staff': query.is_staff,
+#             'dataNascimento': query.dataNascimento
+#         }
+#     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+
+def UserLoggedIn(request):
+    if request.user.is_authenticated == True:
+        username = request.user.username
+    else:
+        username = None
+    return username
+
+
+def logout_view(request):
+    username = UserLoggedIn(request)
+    if username != None:
+        logout(request)
+        return render(request, 'login.html', {'login_error': False})
+
 # Create your views here.
 def login(request):
     if request.method == 'GET':
