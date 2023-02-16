@@ -16,5 +16,12 @@ Sistema para gerenciamento de uma loja de serviços de limpeza.
 4 - Pare o servidor Djando e rode os comandos "python manage.py makemigrations" e "python manage.py migrate"  
 5 - Inicie novamente o servidor Django com o comando "python manage.py runserver". Acesse 127.0.0.1:*PORTA*  
 
+# Começando a usar o sistema
+
+## Criar um SuperUser
+Rode o comando "python manage.py createsuperuser" e crie um usuário administrador para começar a utilizar a aplicação.
+
+## Criar um Atendente
+Como superuser, haverá a opção de criar um usuário, crie um usuário do tipo "Atendente" e um do tipo "Helper"
 
 ## Criado por Kiro Marcell, disponível no [GitHub](https://github.com/kiro-ma).

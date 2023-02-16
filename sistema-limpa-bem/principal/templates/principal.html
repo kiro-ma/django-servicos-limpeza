@@ -14,7 +14,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </head>
 
-<body>
+<body style="background-color: #444;">
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Limpa Bem</a>
@@ -30,7 +30,7 @@
 
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cadastrar atendente/helper</a>
+                        <a class="nav-link" href="{% url 'cadastrar_funcionario' %}">Cadastrar atendente/helper</a>
                     </li>
                     {% endif %}
 
@@ -54,6 +54,68 @@
             </div>
         </div>
     </nav>
+
+    <div class="row">
+        <div class="card w-75 shadow d-flex align-items-center" style="margin: auto; margin-top: 15px;">
+            <div class="card-body w-75">
+
+                <!-- <p>* O serviço escolhido.
+
+                    * O atendente que fez o cadastro.
+                    * O helper que executou o serviço.
+                    * O valor pago pelo atendimento (os gerentes tem
+                    liberdade para oferecer até 10% de desconto).
+                    * A forma de pagamento usada pelo cliente
+                    * A data e o horário que foi cadastrado o atendimento.
+                    * A data e o horário que vai ocorrer a limpeza.
+                    * A situação (pendente, realizado ou cancelado)
+                    
+                    * Os dados do cliente (nome, telefone e endereço).</p> -->
+
+                <form id="form" accept="#" method="POST" onsubmit="registrar_servico(); return false;">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="card-title col-3">
+                            <h5>Registrar serviço</h5>
+                        </div>
+                        <div class="col-8">
+                            <button class="btn btn-success btn-sm" id="btn-salvar"
+                                form="form"><span>Salvar</span></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="atendente">Atendente</label>
+                            <input type="text" required class="form-control form-control-sm" id="atendente"
+                                name="atendente">
+                            <label for="situacao">Situação</label>
+                            <input type="text" required class="form-control form-control-sm" id="situacao"
+                                name="situacao">
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="helper">Helper</label>
+                            <input type="text" required class="form-control form-control-sm" id="helper" name="helper">
+
+                            <label for="dth_atendimento">Data/Hora do atendimento</label>
+                            <input type="date" required class="form-control form-control-sm" id="dth_atendimento"
+                                name="dth_atendimento">
+
+                            <label for="dth_limpeza">Data/Hora da limpeza</label>
+                            <input type="date" required class="form-control form-control-sm" id="dth_limpeza"
+                                name="dth_limpeza">
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="preco">Preço</label>
+                            <input type="text" required class="form-control form-control-sm" id="preco" name="preco">
+                            <label for="vpagamento">Forma de pagamento</label>
+                            <input type="text" required class="form-control form-control-sm" id="pagamento"
+                                name="pagamento">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

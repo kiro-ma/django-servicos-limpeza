@@ -15,8 +15,8 @@
 </head>
 
 <body style="background-color: #333;">
-    <div class="col-sm-10 col-md-4 col-lg-4">
-        <div class="card ">
+    <div class="row">
+        <div class="card shadow col-4 d-flex align-items-center" style="margin: auto; margin-top: 15px;">
             <div class="card-header">
                 <h6 class="m-0 font-weight-bold text-primary">Entrar</h6>
             </div>
@@ -60,11 +60,13 @@
             </div>
         </div>
     </div>
+
 </body>
 
 </html>
 
 {% block javascript %}
+<script src="{% static 'js/fetchFactory.js' %}"></script>
 <script src="{% static 'js/login.js' %}"></script>
 <script>
     // if (window.performance) {

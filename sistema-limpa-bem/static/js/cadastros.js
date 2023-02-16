@@ -1,0 +1,4 @@
+
+function cadastrar_funcionario() {
+    
+}

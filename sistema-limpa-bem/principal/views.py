@@ -8,8 +8,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 
-def is_gerente(user):
-    return user.groups.filter(name='Gerente').exists()
 
 @login_required(login_url='/auth/login/')
 def principal(request):
@@ -17,14 +15,14 @@ def principal(request):
     return render(request, 'principal.html', {'page': page})
 
 @login_required(login_url='/auth/login/')
-@user_passes_test(is_gerente)
+@user_passes_test(lambda u: u.is_superuser)
 def servicos_page(request):
     if request.method == 'GET':
         page = 'Servicos'
         return render(request, 'servicos.html', {'page': page})
 
 @login_required(login_url='/auth/login/')
-@user_passes_test(is_gerente)
+@user_passes_test(lambda u: u.is_superuser)
 def servicos_data(request):
     servicos = []
     if request.method == 'GET':
