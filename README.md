@@ -2,8 +2,8 @@
 Sistema para gerenciamento de uma loja de serviços de limpeza.
 
 # Guia de instalação
-1 - Após clonar o repositório, execute o arquivo "run_server.bat", ele irá iniciar o ambiente virtual Python e o servidor Django no localhost (será especificada a porta no cmd).
-2 - Crie um arquivo .env dentro da aplicação "mysite" com os seguintes campos:
+1 - Após clonar o repositório, execute o arquivo "run_server.bat", ele irá iniciar o ambiente virtual Python e o servidor Django no localhost (será especificada a porta no cmd).  
+2 - Crie um arquivo .env dentro da aplicação "mysite" com os seguintes campos:  
 
     SECRET_KEY=*sua chave secreta django, caso não tenha, entrar em contato comigo (Kiro)*
     DB_NAME=limpeza_db
@@ -12,9 +12,9 @@ Sistema para gerenciamento de uma loja de serviços de limpeza.
     DB_HOST=localhost
     DB_PORT=5432
 
-3 - Vá no PgAdmin e crie uma database chamada "limpeza_db".
-4 - Pare o servidor Djando e rode os comandos "python manage.py makemigrations" e "python manage.py migrate"
-5 - Inicie novamente o servidor Django com o comando "python manage.py runserver". Acesse 127.0.0.1:*PORTA*
+3 - Vá no PgAdmin e crie uma database chamada "limpeza_db".  
+4 - Pare o servidor Djando e rode os comandos "python manage.py makemigrations" e "python manage.py migrate"  
+5 - Inicie novamente o servidor Django com o comando "python manage.py runserver". Acesse 127.0.0.1:*PORTA*  
 
 
 ## Criado por Kiro Marcell, disponível no [GitHub](https://github.com/kiro-ma).
