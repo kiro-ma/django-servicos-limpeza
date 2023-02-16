@@ -9,62 +9,84 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import user_passes_test
 from .models import Usuario
+from django.contrib.auth.models import Group
+
+def is_gerente(user):
+    return user.groups.filter(name='Gerentes').exists()
 
 
-# def getUsuarios(request):
-#     if request.method == 'GET':
-#         usuarios = Usuario.objects.all()
-#         lista_de_usuarios = []
-#         for usuario in usuarios:
-#             dados = {
-#                 'nome': usuario.first_name,
-#                 'userID': usuario.username
-#             }
-#             lista_de_usuarios.append(dados)
-
-#     return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
+def is_atendente(user):
+    return user.groups.filter(name='Atendentes').exists()
 
 
-# def getUsuario(request, username):
-#     if request.method == 'GET':
-#         query = Usuario.objects.filter(username=username).get()
-#         userDict = {
-#             'nome': query.first_name,
-#             'username': query.username,
-#             'cpf': query.cpf,
-#             'funcao': query.funcao,
-#             'email': query.email,
-#             'dataAdmissao': query.dataAdmissao,
-#             'assinaDoc': query.snassina,
-#             'avisaEstoque': query.bitAvisaEstoqueMinimo,
-#             'avisaTeto': query.bitAvisaTetoConstitucional,
-#             'is_staff': query.is_staff,
-#             'dataNascimento': query.dataNascimento
-#         }
-#     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+@user_passes_test(is_gerente or is_atendente)
+def getUsuarios(request):
+    if request.method == 'GET':
+        usuarios = Usuario.objects.all()
+        lista_de_usuarios = []
+        for usuario in usuarios:
+            dados = {
+                'first_name': usuario.first_name,
+                'username': usuario.username
+            }
+            lista_de_usuarios.append(dados)
+
+    return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
+
+
+@user_passes_test(is_gerente or is_atendente)
+def getUsuario(request, username):
+    if request.method == 'GET':
+        query = Usuario.objects.filter(username=username).get()
+        userDict = {
+            'is_superuser': query.is_superuser,
+            'username': query.username,
+            'first_name': query.first_name,
+            'last_name': query.last_name,
+            'email': query.email,
+            'cidade' : query.cidade,
+            'logradouro' : query.logradouro,
+            'estado' : query.estado,
+            'numero' : query.numero,
+            'telefone' : query.telefone
+        }
+    return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
 
 @login_required(login_url='/auth/login/')
 @user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(is_gerente)
 def cadastrar_funcionario(request):
     if request.method == 'GET':
         page = "Cadastro de funcionarios"
         return render(request, 'cadastro_funcionarios.html', {'page': page})
     else:
         username = request.POST.get('username')
-        email = request.POST.get('email')
+        # só é usado pra atribuir um grupo
+        tipo_user = request.POST.get('tipo_user')
         senha = request.POST.get('senha')
         confirmarSenha = request.POST.get('senha2')
-
-        tipo_user = request.POST.get('tipo_user')
+        telefone = request.POST.get('telefone')
+        email = request.POST.get('email')
         nome = request.POST.get('nome')
+        sobrenome = request.POST.get('sobrenome')
+        logradouro = request.POST.get('logradouro')
+        numero = request.POST.get('numero')
+        cidade = request.POST.get('cidade')
+        estado = request.POST.get('estado')
+
+        dict_tipo_user = {
+            '0': 'Clientes',
+            '1': 'Helpers',
+            '2': 'Atendentes',
+            '3': 'Gerentes'
+        }
 
         if senha != confirmarSenha:
             return HttpResponse('Senha incompatível.')
 
         if len(senha) < 4:
             return HttpResponse('Senha muito curta, mínimo de quatro caracteres.')
-
-        nome = request.POST.get('nome')
 
         user = Usuario.objects.filter(username=username).first()
 
@@ -76,9 +98,12 @@ def cadastrar_funcionario(request):
             user.save()
             return render(request, 'cadastro_funcionarios.html', {'editado': user.username})
 
-    
         # \/ Pra ser ADM um usuário teria is_staff=True
-        user = Usuario.objects.create_user(username=username, email=email, password=senha)
+        user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
+                                           last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado)
+
+        group = Group.objects.get(name=dict_tipo_user[f"{tipo_user}"])
+        user.groups.add(group)
 
         user.save()
         return render(request, 'cadastro_funcionarios.html', {'editado': False})

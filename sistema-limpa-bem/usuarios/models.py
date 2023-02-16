@@ -8,7 +8,11 @@ class modelTESTE(models.Model):
 
 
 class Usuario(AbstractUser):
-    tipo_user = models.CharField(max_length=50, blank=True, null=True)
+    telefone = models.CharField(max_length=50, blank=True, null=True)
+    logradouro = models.CharField(max_length=50, blank=True, null=True)
+    numero = models.CharField(max_length=10, blank=True, null=True)
+    cidade = models.CharField(max_length=50, blank=True, null=True)
+    estado = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.username

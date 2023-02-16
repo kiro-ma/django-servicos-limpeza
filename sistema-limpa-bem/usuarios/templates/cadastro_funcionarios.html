@@ -17,6 +17,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.2/datatables.min.css" />
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.2/datatables.min.js"></script>
+    <script type='text/javascript' src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 </head>
 
 <body style="background-color: #444;">
@@ -55,7 +56,8 @@
     </nav>
 
     <div class="row">
-        <div class="card shadow col-4 d-flex align-items-center" style="margin: auto; margin-top: 15px;">
+        <div class="card shadow col-sm-12 col-md-4 col-lg-4 d-flex align-items-center"
+            style="margin: auto; margin-top: 15px;">
             <div class="card-body">
 
                 <div class="row">
@@ -66,40 +68,109 @@
                                 <h5>Cadastrar funcionário</h5>
                             </div>
                             <div class="row">
-                                <div class="form-group col-6">
+                                <div class="form-group col-12">
+                                    <div class="card border-0">
+                                        <div class="card-title">
+                                            <h6>Dados gerais</h6>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="username">Nome de usuário</label>
+                                                <input type="text" required class="form-control form-control-sm"
+                                                    id="username" name="username" autocomplete="nope">
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="tipo_user">Tipo de usuário</label>
+                                                <select class="form-control form-control-sm selectoption" id="tipo_user"
+                                                    name="tipo_user">
+                                                    <option value="0">Cliente</option>
+                                                    <option value="1">Helper</option>
+                                                    <option value="2">Atendente</option>
+                                                    <option value="3">Gerente</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                    <label for="username">Nome de usuário</label>
-                                    <input type="text" required class="form-control form-control-sm" id="username"
-                                        name="username" autocomplete="nope">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="senha">Senha</label>
+                                                <input type="password" required class="form-control form-control-sm"
+                                                    id="senha" name="senha" autocomplete="nope">
 
-                                    <label for="tipo_user">Tipo de usuário</label>
-                                    <input type="text" required class="form-control form-control-sm" id="tipo_user"
-                                        name="tipo_user" autocomplete="nope">
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="senha2">Repetir senha</label>
+                                                <input type="password" required class="form-control form-control-sm"
+                                                    id="senha2" name="senha2" autocomplete="nope">
+                                            </div>
+                                        </div>
 
-                                    <label for="senha">Senha</label>
-                                    <input type="password" required class="form-control form-control-sm" id="senha"
-                                        name="senha" autocomplete="nope">
-
-                                </div>
-                                <div class="form-group col-6">
-
-                                    <label for="email">Email</label>
-                                    <input type="email" required class="form-control form-control-sm" id="email"
-                                        name="email" autocomplete="nope">
-
-                                    <label for="nome">Primeiro nome</label>
-                                    <input type="text" required class="form-control form-control-sm" id="nome"
-                                        name="nome" autocomplete="nope">
-
-
-                                    <label for="senha2">Repetir senha</label>
-                                    <input type="password" required class="form-control form-control-sm" id="senha2"
-                                        name="senha2" autocomplete="nope">
-
-                                    <div style="margin-top: 15px;">
-                                        <button type="submit" class="btn btn-success btn-sm" id="btn-cadastrar"
-                                            form="form"><span>Cadastrar</span></button>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="telefone">Telefone</label>
+                                                <input type="text" required class="form-control form-control-sm telefone-mask"
+                                                    id="telefone" name="telefone" autocomplete="nope">
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="telefone">Email</label>
+                                                <input type="email" required class="form-control form-control-sm"
+                                                    id="email" name="email" autocomplete="nope">
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <div class="card border-0" style="margin-top: 15px;">
+                                        <div class="card-title">
+                                            <h6>Nome e Endereço</h6>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="nome">Primeiro nome</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="nome" name="nome" autocomplete="nope">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="sobrenome">Sobrenome</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="sobrenome" name="sobrenome" autocomplete="nope">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="logradouro">Logradouro</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="logradouro" name="logradouro" autocomplete="nope">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="numero">Número</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="numero" name="numero" autocomplete="nope">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="cidade">Cidade</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="cidade" name="cidade" autocomplete="nope">
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                                    <label for="estado">Estado</label>
+                                                    <input type="text" required class="form-control form-control-sm"
+                                                        id="estado" name="estado" autocomplete="nope">
+
+                                                    <div style="margin-top: 15px;">
+                                                        <button type="submit" class="btn btn-success btn-sm"
+                                                            id="btn-cadastrar"
+                                                            form="form"><span>Cadastrar</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </form>
@@ -112,6 +183,13 @@
 {% block javascript %}
 <script src="{% static 'js/fetchFactory.js' %}"></script>
 <script src="{% static 'js/cadastros.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.telefone-mask').inputmask('(99)99999-9999');
+    })
+</script>
+
 {% endblock %}
 
 </html>
