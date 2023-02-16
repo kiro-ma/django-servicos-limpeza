@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Servicos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'fa/css/all.min.css' %}"> -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.2/datatables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.13.2/datatables.min.js"></script>
+</head>
+
+<body style="background-color: #444;">
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Limpa Bem</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'principal_principal' %}">Home</a>
+                    </li>
+
+                    {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cadastrar atendente/helper</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="navbar-text" style="margin-right: 15px;">
+                        Usuário: {{ user.username }}
+                    </li>
+
+                    <form action="{% url 'logout' %}">
+                        <input class="btn  btn-outline-secondary" type="submit" value="Deslogar" />
+                    </form>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link disabled">Disabled</a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="card shadow col-4 d-flex align-items-center" style="margin: auto; margin-top: 15px;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-title">
+                            <h5>Listagem de servicos</h5>
+                        </div>
+                        <table id="table_servicos" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Preco</th>
+                                    <th>Disponibilidade</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="border: 1px solid blue; border-radius: 5px; margin-top: 15px;"
+                    id="row-criar-servico">
+                    <div class="col-12">
+                        <form id="form" accept="#" method="POST" onsubmit="post_servicos(false); return false;">
+                            {% csrf_token %}
+                            <div class="card-title" style="color: blue; margin-top: 15px;">
+                                <h5>Cadastrar novo serviço</h5>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-4">
+                                    <label for="nome-servico-input">Nome</label>
+                                    <input type="text" required class="form-control form-control-sm"
+                                        id="nome-servico-input" name="nome-servico-input">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="valor-servico-input">Preço</label>
+                                    <input type="text" required class="form-control form-control-sm"
+                                        id="valor-servico-input" name="valor-servico-input">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="disponivel-servico-input">Disponibilidade</label>
+                                    <input type="checkbox" id="disponivel-servico-input" name="disponivel-servico-input"
+                                        checked>
+
+                                    <div>
+                                        <button class="btn btn-success btn-sm" id="btn-salvar"
+                                            form="form"><span>Salvar</span></button>
+
+                                        <!-- <button type="button" class="btn btn-info btn-sm"
+                                            onclick="preencherTabelaServicos()">Atualizar Tabela</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row d-none" style="border: 1px solid orangered; border-radius: 5px; margin-top: 15px;"
+                    id="row-editar-servico" id="row-editar-servico">
+                    <div class="col-12">
+                        <div class="card-title" style="color: orangered; margin-top: 15px;">
+                            <h5 id="descricao-editar-servico">Editar serviço</h5>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-4">
+                                <label for="nome-servico-input">Nome</label>
+                                <input type="text" required class="form-control form-control-sm"
+                                    id="nome-servico-EDITAR" name="nome-servico-EDITAR">
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="valor-servico-input">Preço</label>
+                                <input type="text" required class="form-control form-control-sm"
+                                    id="valor-servico-EDITAR" name="valor-servico-EDITAR">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="disponivel-servico-input">Disponibilidade</label>
+                                <input type="checkbox" id="disponivel-servico-EDITAR" name="disponivel-servico-EDITAR"
+                                    checked>
+
+                                <div>
+                                    <button class="btn btn-warning btn-sm" id="btn-editar"
+                                        onclick="patch_servicos()"><span>Salvar</span></button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" id="btn-editar-cancelar"
+                                        onclick="cancelarEdição()"><span>Cancelar</span></button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="btn-excluir"
+                                        onclick="delete_servicos()"><span>Excluir</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% block javascript %}
+<script src="{% static 'js/fetchFactory.js' %}"></script>
+<script src="{% static 'js/servicos.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#table_servicos').DataTable({
+            scrollY: '200px',
+            scrollCollapse: true,
+            paging: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ resultados por página",
+                "zeroRecords": "Nada encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "Sem resultados disponíveis",
+                "infoFiltered": "(filtrado de _MAX_ resultados)",
+                "search": "Pesquisar"
+            }, columnDefs: [
+                {
+                    targets: -1,
+                    data: null,
+                    defaultContent: `<button class="btn btn-warning btnEditar" title="Editar"
+                                    type="button"><i class="bi bi-pencil-square"></i></button>`,
+                },
+            ],
+        });
+    });
+
+
+</script>
+{% endblock %}
+
+</html>
