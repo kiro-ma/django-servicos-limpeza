@@ -7,8 +7,8 @@ Sistema para gerenciamento de uma loja de serviços de limpeza.
 
     SECRET_KEY=*sua chave secreta django, caso não tenha, entrar em contato comigo (Kiro)*
     DB_NAME=limpeza_db
-    DB_USER=postgres
-    DB_PASSWORD=postgres
+    DB_USER=*usuario pgadmin*
+    DB_PASSWORD="senha pgadmin"
     DB_HOST=localhost
     DB_PORT=5432
 
