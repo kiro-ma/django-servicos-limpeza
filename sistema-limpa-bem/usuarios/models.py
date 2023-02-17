@@ -13,6 +13,7 @@ class Usuario(AbstractUser):
     numero = models.CharField(max_length=10, blank=True, null=True)
     cidade = models.CharField(max_length=50, blank=True, null=True)
     estado = models.CharField(max_length=50, blank=True, null=True)
+    tipo_user = models.IntegerField(blank=False, null=False)
 
     def __str__(self):
         return self.username

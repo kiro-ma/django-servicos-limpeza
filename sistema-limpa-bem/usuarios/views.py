@@ -18,8 +18,11 @@ def is_gerente(user):
 def is_atendente(user):
     return user.groups.filter(name='Atendentes').exists()
 
+def is_gerente_or_atendente(user):
+    return (user.groups.filter(name='Gerentes').exists() or user.groups.filter(name='Atendentes').exists())
 
-@user_passes_test(is_gerente or is_atendente)
+
+@user_passes_test(is_gerente_or_atendente)
 def getUsuarios(request):
     if request.method == 'GET':
         usuarios = Usuario.objects.all()
@@ -34,8 +37,8 @@ def getUsuarios(request):
     return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
 
 
-@user_passes_test(is_gerente or is_atendente)
-def getUsuario(request, username):
+@user_passes_test(is_gerente_or_atendente)
+def getUsuarioByUsername(request, username):
     if request.method == 'GET':
         query = Usuario.objects.filter(username=username).get()
         userDict = {
@@ -48,13 +51,71 @@ def getUsuario(request, username):
             'logradouro' : query.logradouro,
             'estado' : query.estado,
             'numero' : query.numero,
-            'telefone' : query.telefone
+            'telefone' : query.telefone,
+            'id' : query.pk
+        }
+    return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+
+@user_passes_test(is_gerente_or_atendente)
+def getUsuarioByNome(request, nome):
+    if request.method == 'GET':
+        query = Usuario.objects.filter(first_name=nome).get()
+        userDict = {
+            'is_superuser': query.is_superuser,
+            'username': query.username,
+            'first_name': query.first_name,
+            'last_name': query.last_name,
+            'email': query.email,
+            'cidade' : query.cidade,
+            'logradouro' : query.logradouro,
+            'estado' : query.estado,
+            'numero' : query.numero,
+            'telefone' : query.telefone,
+            'id' : query.pk
+        }
+    return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+@user_passes_test(is_gerente_or_atendente)
+def getUsuarioByEmail(request, email):
+    if request.method == 'GET':
+        query = Usuario.objects.filter(email=email).get()
+        userDict = {
+            'is_superuser': query.is_superuser,
+            'username': query.username,
+            'first_name': query.first_name,
+            'last_name': query.last_name,
+            'email': query.email,
+            'cidade' : query.cidade,
+            'logradouro' : query.logradouro,
+            'estado' : query.estado,
+            'numero' : query.numero,
+            'telefone' : query.telefone,
+            'id' : query.pk
+        }
+    return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+@user_passes_test(is_gerente_or_atendente)
+def getUsuarioByTelefone(request, telefone):
+    if request.method == 'GET':
+        query = Usuario.objects.filter(telefone=telefone).get()
+        userDict = {
+            'is_superuser': query.is_superuser,
+            'username': query.username,
+            'first_name': query.first_name,
+            'last_name': query.last_name,
+            'email': query.email,
+            'cidade' : query.cidade,
+            'logradouro' : query.logradouro,
+            'estado' : query.estado,
+            'numero' : query.numero,
+            'telefone' : query.telefone,
+            'id' : query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
 
 @login_required(login_url='/auth/login/')
-@user_passes_test(lambda u: u.is_superuser)
 @user_passes_test(is_gerente)
 def cadastrar_funcionario(request):
     if request.method == 'GET':
@@ -100,7 +161,7 @@ def cadastrar_funcionario(request):
 
         # \/ Pra ser ADM um usuário teria is_staff=True
         user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
-                                           last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado)
+                                           last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user)
 
         group = Group.objects.get(name=dict_tipo_user[f"{tipo_user}"])
         user.groups.add(group)
