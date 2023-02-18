@@ -24,4 +24,28 @@ Rode o comando "python manage.py createsuperuser" e crie um usuário administrad
 ## Criar um Atendente
 Como superuser, haverá a opção de criar um usuário, crie um usuário do tipo "Atendente" e um do tipo "Helper"
 
+# Funcionalidades
+
+## Cadastro de funcionarios
+Um usuário superuser pode cadastrar novos funcionários e clientes, para isso, entre no sistema com uma conta superuser e clique em "Cadastrar Atendente/Helper", além de  
+funcionários, esta opção permite cadastrar clientes.  
+
+## Cliente cadastra a si mesmo
+Na tela de login existe a opção de cadastrar a si mesmo no sistema, essa função sempre cadastrará o user como Cliente.  
+
+## Agendamentos
+Um cliente que loga no sistema pode agendar um atendimento, a tela que será mostrada será para isso. Um usuário cliente pode consultar seus agendamentos, atendentes e gerentes  
+podem ver os agendamentos de todos.
+
+## Criar um serviço
+Lembrando que para iniciar o uso do sistema é preciso cadastrar um serviço, para isso vá em "Gerenciar/Cadastrar Serviço", lá existem as opções de Cadastrar, Editar e Excluir   serviços.
+
+## Criar um atendimento
+Gerentes e Atendentes podem registrar e editar um Atendimento, Gerentes têm a opção de aplicar desconto de até 10% nos valores.
+
+
+## Relatórios
+A tela "Relatórios" irá imprimir relatórios com os atendimentos do dia ou do mês atual.
+
+
 ## Criado por Kiro Marcell, disponível no [GitHub](https://github.com/kiro-ma).
