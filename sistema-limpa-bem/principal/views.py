@@ -27,10 +27,18 @@ def principal(request):
     return render(request, 'principal.html', {'page': page})
 
 
+@user_passes_test(is_gerente_or_atendente)
+@login_required(login_url='/auth/login/')
+def gerenciar_agendamento(request):
+    page = 'Gerenciar Agendamento'
+    return render(request, 'gerenciar_agendamentos.html', {'page': page})
+
+
 @login_required(login_url='/auth/login/')
 def agendamento(request):
     page = 'Agendamento'
     return render(request, 'agendamento.html', {'page': page})
+
 
 @login_required(login_url='/auth/login/')
 def agendamento_data_by_id(request, id_cliente):
