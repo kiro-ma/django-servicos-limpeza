@@ -26,3 +26,11 @@ class Atendimento(models.Model):
     estado_cliente = models.CharField(max_length=50)
     data_criacao_atendimento = models.DateTimeField()
 
+
+class Agendamento(models.Model):
+    id_cliente = models.IntegerField()
+    servico = models.IntegerField()
+    data_reservada = models.DateTimeField()
+    data_de_criacao = models.DateTimeField()
+    valor = models.FloatField()
+    

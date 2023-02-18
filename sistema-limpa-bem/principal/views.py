@@ -28,11 +28,52 @@ def principal(request):
 
 
 @login_required(login_url='/auth/login/')
+def agendamento(request):
+    page = 'Agendamento'
+    return render(request, 'agendamento.html', {'page': page})
+
+
+@login_required(login_url='/auth/login/')
+def agendamento_data(request):
+    agendamentos = []
+    if request.method == 'GET':
+        agendamentos_query = Agendamento.objects.all()
+
+        for agendamento in agendamentos_query:
+            agendamentos.append({'id_cliente': agendamento.id_cliente, 'servico': agendamento.servico, 'id': agendamento.pk,
+                                'data_reservada': agendamento.data_reservada, 'data_de_criacao': agendamento.data_de_criacao, 'valor': agendamento.valor})
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        dados = json.loads(body_unicode)
+
+        Agendamento(id_cliente=dados['id_cliente'], servico=dados['servico'],
+                    data_reservada=dados['data_reservada'], data_de_criacao=dados['data_de_criacao'], valor=dados['valor']).save()
+    if request.method == 'DELETE':
+        body_unicode = request.body.decode('utf-8')
+        dados = json.loads(body_unicode)
+        print('\n\n\n dados', dados, '\n\n\n')
+        Agendamento.objects.get(pk=dados['id']).delete()
+    return HttpResponse(json.dumps(agendamentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+
+@login_required(login_url='/auth/login/')
 @user_passes_test(is_gerente)
 def servicos_page(request):
     if request.method == 'GET':
         page = 'Servicos'
         return render(request, 'servicos.html', {'page': page})
+
+
+@login_required(login_url='/auth/login/')
+def get_servicos_data(request):
+    servicos = []
+    if request.method == 'GET':
+        servicos_query = Servico.objects.all()
+
+        for servico in servicos_query:
+            servicos.append({'nome': servico.nome, 'valor': servico.valor,
+                            'disp': servico.disponivel, 'id': servico.pk})
+    return HttpResponse(json.dumps(servicos), content_type='application/json;charset=utf-8')
 
 
 @login_required(login_url='/auth/login/')
@@ -99,7 +140,7 @@ def atendimento(request):
                                  'data_criacao_atendimento': atendimento.data_criacao_atendimento,
                                  'estado_cliente': atendimento.estado_cliente,
                                  'id': atendimento.pk})
-            
+
     elif request.method == 'PATCH':
         body_unicode = request.body.decode('utf-8')
         dados = json.loads(body_unicode)

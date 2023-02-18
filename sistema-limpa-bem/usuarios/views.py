@@ -11,12 +11,14 @@ from django.contrib.auth.decorators import user_passes_test
 from .models import Usuario
 from django.contrib.auth.models import Group
 
+
 def is_gerente(user):
     return user.groups.filter(name='Gerentes').exists()
 
 
 def is_atendente(user):
     return user.groups.filter(name='Atendentes').exists()
+
 
 def is_gerente_or_atendente(user):
     return (user.groups.filter(name='Gerentes').exists() or user.groups.filter(name='Atendentes').exists())
@@ -36,6 +38,7 @@ def getUsuarios(request):
 
     return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
 
+
 @user_passes_test(is_gerente_or_atendente)
 def getUsuarioById(request, id):
     if request.method == 'GET':
@@ -46,14 +49,15 @@ def getUsuarioById(request, id):
             'first_name': query.first_name,
             'last_name': query.last_name,
             'email': query.email,
-            'cidade' : query.cidade,
-            'logradouro' : query.logradouro,
-            'estado' : query.estado,
-            'numero' : query.numero,
-            'telefone' : query.telefone,
-            'id' : query.pk
+            'cidade': query.cidade,
+            'logradouro': query.logradouro,
+            'estado': query.estado,
+            'numero': query.numero,
+            'telefone': query.telefone,
+            'id': query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
 
 @user_passes_test(is_gerente_or_atendente)
 def getUsuarioByUsername(request, username):
@@ -65,12 +69,12 @@ def getUsuarioByUsername(request, username):
             'first_name': query.first_name,
             'last_name': query.last_name,
             'email': query.email,
-            'cidade' : query.cidade,
-            'logradouro' : query.logradouro,
-            'estado' : query.estado,
-            'numero' : query.numero,
-            'telefone' : query.telefone,
-            'id' : query.pk
+            'cidade': query.cidade,
+            'logradouro': query.logradouro,
+            'estado': query.estado,
+            'numero': query.numero,
+            'telefone': query.telefone,
+            'id': query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
@@ -85,14 +89,15 @@ def getUsuarioByNome(request, nome):
             'first_name': query.first_name,
             'last_name': query.last_name,
             'email': query.email,
-            'cidade' : query.cidade,
-            'logradouro' : query.logradouro,
-            'estado' : query.estado,
-            'numero' : query.numero,
-            'telefone' : query.telefone,
-            'id' : query.pk
+            'cidade': query.cidade,
+            'logradouro': query.logradouro,
+            'estado': query.estado,
+            'numero': query.numero,
+            'telefone': query.telefone,
+            'id': query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
 
 @user_passes_test(is_gerente_or_atendente)
 def getUsuarioByEmail(request, email):
@@ -104,14 +109,15 @@ def getUsuarioByEmail(request, email):
             'first_name': query.first_name,
             'last_name': query.last_name,
             'email': query.email,
-            'cidade' : query.cidade,
-            'logradouro' : query.logradouro,
-            'estado' : query.estado,
-            'numero' : query.numero,
-            'telefone' : query.telefone,
-            'id' : query.pk
+            'cidade': query.cidade,
+            'logradouro': query.logradouro,
+            'estado': query.estado,
+            'numero': query.numero,
+            'telefone': query.telefone,
+            'id': query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
 
 @user_passes_test(is_gerente_or_atendente)
 def getUsuarioByTelefone(request, telefone):
@@ -123,12 +129,12 @@ def getUsuarioByTelefone(request, telefone):
             'first_name': query.first_name,
             'last_name': query.last_name,
             'email': query.email,
-            'cidade' : query.cidade,
-            'logradouro' : query.logradouro,
-            'estado' : query.estado,
-            'numero' : query.numero,
-            'telefone' : query.telefone,
-            'id' : query.pk
+            'cidade': query.cidade,
+            'logradouro': query.logradouro,
+            'estado': query.estado,
+            'numero': query.numero,
+            'telefone': query.telefone,
+            'id': query.pk
         }
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
@@ -162,7 +168,7 @@ def cadastrar_cliente(request):
 
         if user:
             return HttpResponse('Username já cadastrado.')
-        
+
         user = Usuario.objects.filter(email=email).first()
 
         if user:
@@ -177,7 +183,6 @@ def cadastrar_cliente(request):
 
         user.save()
         return render(request, 'login.html')
-
 
 
 @login_required(login_url='/auth/login/')
@@ -261,9 +266,18 @@ def login(request):
 
         user = authenticate(username=username, password=senha)
 
+        tipo_user = Usuario.objects.get(pk=user.pk).tipo_user
+
         if user:
             login_django(request, user)
-            return HttpResponseRedirect('/principal/')
+            if (tipo_user == 3):
+                return HttpResponseRedirect('/principal/')
+            elif (tipo_user == 2):
+                return HttpResponseRedirect('/principal/')
+            elif (tipo_user == 1):
+                return HttpResponseRedirect('/principal/')
+            else:
+                return HttpResponseRedirect('/principal/agendamento/')
         else:
             return HttpResponse(status=406)
 
