@@ -222,22 +222,28 @@ def cadastrar_funcionario(request):
         user = Usuario.objects.filter(username=username).first()
 
         if user:
-            user.first_name = nome
-            user.set_password(senha)
-            user.email = email
-            user.tipo_user = tipo_user
-            user.save()
-            return render(request, 'cadastro_funcionarios.html', {'editado': user.username})
+            return HttpResponse('Username já cadastrado.')
+        
+        user = Usuario.objects.filter(email=email).first()
 
-        # \/ Pra ser ADM um usuário teria is_staff=True
-        user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
-                                           last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user)
+        if user:
+            return HttpResponse('Email já cadastrado.')
+
+        if tipo_user == '2':
+            user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
+                                               last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user, is_staff=True, is_superuser=False)
+        elif tipo_user == '3':
+            user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
+                                               last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user, is_staff=True, is_superuser=True)
+        else:
+            user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
+                                               last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user, is_staff=False, is_superuser=False)
 
         group = Group.objects.get(name=dict_tipo_user[f"{tipo_user}"])
         user.groups.add(group)
 
         user.save()
-        return render(request, 'cadastro_funcionarios.html', {'editado': False})
+        return render(request, 'cadastro_funcionarios.html')
 
 
 def UserLoggedIn(request):

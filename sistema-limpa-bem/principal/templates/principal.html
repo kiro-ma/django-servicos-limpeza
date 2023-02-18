@@ -45,13 +45,13 @@
                         <a class="nav-link active" aria-current="page" href="{% url 'principal_principal' %}">Home</a>
                     </li>
 
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cadastrar_funcionario' %}">Cadastrar atendente/helper</a>
                     </li>
                     {% endif %}
 
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'principal_servicos_page' %}">Gerenciar/Cadastrar serviço</a>
                     </li>
