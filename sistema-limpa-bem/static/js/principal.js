@@ -1,6 +1,25 @@
 let atendimentoAtual = new Object();
 let rowEditarAtual
 
+
+
+
+var valor_servico_atual
+
+function updateSlider() {
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.value = 'Desconto de ' + slider.value + '%';
+
+    if (document.getElementById('checkbox_desconto').checked && document.getElementById('preco').value != '') {
+        document.getElementById('preco').value = valor_servico_atual - (valor_servico_atual * (slider.value / 100))
+    } else if (valor_servico_atual) {
+        document.getElementById('preco').value = valor_servico_atual
+    } else {
+        document.getElementById('preco').value = ''
+    }
+}
+
 function getFormValues() {
     let formEl = document.forms.form
     let formData = new FormData(formEl)
@@ -159,10 +178,13 @@ async function preencherValorServico(nome) {
         if (nome == servicos[i]['nome']) {
             document.querySelector('#preco').value = servicos[i]['valor']
             document.querySelector('#id-servico').value = servicos[i]['id']
+
+            valor_servico_atual = servicos[i]['valor']
             return
         }
     }
     document.querySelector('#preco').value = ''
+    document.querySelector('#id-servico').value = ''
 }
 
 async function preencherSelectServicos(editar) {
