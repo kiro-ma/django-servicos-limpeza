@@ -6,6 +6,9 @@ from .models import *
 from django.db.models import F, Q, TextField, Value
 from django.contrib.auth.decorators import login_required, user_passes_test
 from usuarios import models as usuarios_models
+from datetime import datetime
+
+
 # Create your views here.
 
 
@@ -19,6 +22,14 @@ def is_atendente(user):
 
 def is_gerente_or_atendente(user):
     return (user.groups.filter(name='Gerentes').exists() or user.groups.filter(name='Atendentes').exists())
+
+
+
+@user_passes_test(is_gerente_or_atendente)
+@login_required(login_url='/auth/login/')
+def relatorios(request):
+    page = 'Relatorios'
+    return render(request, 'relatorios.html', {'page': page})
 
 
 @login_required(login_url='/auth/login/')
@@ -145,6 +156,64 @@ def servicos_data(request):
 
     return HttpResponse(json.dumps(servicos), content_type='application/json;charset=utf-8')
 
+
+@user_passes_test(is_gerente_or_atendente)
+@login_required(login_url='/auth/login/')
+def atendimento_dia(request):
+    atendimentos = []
+    today = datetime.now()
+
+    if request.method == 'GET':
+        atendimentos_query = Atendimento.objects.all()
+        for atendimento in atendimentos_query:
+            if(atendimento.data_hora.strftime('%d')==today.strftime('%d')):
+                atendimentos.append({'atendente': atendimento.atendente,
+                                'helper': atendimento.helper,
+                                 'cliente': atendimento.cliente,
+                                 'servico': atendimento.servico,
+                                 'data_hora': atendimento.data_hora,
+                                 'preco': atendimento.preco,
+                                 'situacao': atendimento.situacao,
+                                 'pagamento': atendimento.pagamento,
+                                 'nome_cliente': atendimento.nome_cliente,
+                                 'telefone_cliente': atendimento.telefone_cliente,
+                                 'logradouro_cliente': atendimento.logradouro_cliente,
+                                 'numero_casa_cliente': atendimento.numero_casa_cliente,
+                                 'cidade_cliente': atendimento.cidade_cliente,
+                                 'data_criacao_atendimento': atendimento.data_criacao_atendimento,
+                                 'estado_cliente': atendimento.estado_cliente,
+                                 'id': atendimento.pk})
+            
+    return HttpResponse(json.dumps(atendimentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+@user_passes_test(is_gerente_or_atendente)
+@login_required(login_url='/auth/login/')
+def atendimento_mes(request):
+    atendimentos = []
+    today = datetime.now()
+
+    if request.method == 'GET':
+        atendimentos_query = Atendimento.objects.all()
+        for atendimento in atendimentos_query:
+            if(atendimento.data_hora.strftime('%Y-%m')==today.strftime('%Y-%m')):
+                atendimentos.append({'atendente': atendimento.atendente,
+                                'helper': atendimento.helper,
+                                 'cliente': atendimento.cliente,
+                                 'servico': atendimento.servico,
+                                 'data_hora': atendimento.data_hora,
+                                 'preco': atendimento.preco,
+                                 'situacao': atendimento.situacao,
+                                 'pagamento': atendimento.pagamento,
+                                 'nome_cliente': atendimento.nome_cliente,
+                                 'telefone_cliente': atendimento.telefone_cliente,
+                                 'logradouro_cliente': atendimento.logradouro_cliente,
+                                 'numero_casa_cliente': atendimento.numero_casa_cliente,
+                                 'cidade_cliente': atendimento.cidade_cliente,
+                                 'data_criacao_atendimento': atendimento.data_criacao_atendimento,
+                                 'estado_cliente': atendimento.estado_cliente,
+                                 'id': atendimento.pk})
+            
+    return HttpResponse(json.dumps(atendimentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
 @login_required(login_url='/auth/login/')
 @user_passes_test(is_gerente_or_atendente)
