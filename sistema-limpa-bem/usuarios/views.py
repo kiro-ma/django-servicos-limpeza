@@ -36,6 +36,24 @@ def getUsuarios(request):
 
     return HttpResponse(json.dumps(lista_de_usuarios), content_type='application/json;charset=utf-8')
 
+@user_passes_test(is_gerente_or_atendente)
+def getUsuarioById(request, id):
+    if request.method == 'GET':
+        query = Usuario.objects.filter(pk=id).get()
+        userDict = {
+            'is_superuser': query.is_superuser,
+            'username': query.username,
+            'first_name': query.first_name,
+            'last_name': query.last_name,
+            'email': query.email,
+            'cidade' : query.cidade,
+            'logradouro' : query.logradouro,
+            'estado' : query.estado,
+            'numero' : query.numero,
+            'telefone' : query.telefone,
+            'id' : query.pk
+        }
+    return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
 @user_passes_test(is_gerente_or_atendente)
 def getUsuarioByUsername(request, username):

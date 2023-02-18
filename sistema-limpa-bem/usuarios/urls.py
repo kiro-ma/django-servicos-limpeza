@@ -14,6 +14,7 @@ urlpatterns = [
     path('get/usuario/nome/<str:nome>/', views.getUsuarioByNome, name='get_usuario_by_nome'),
     path('get/usuario/email/<str:email>/', views.getUsuarioByEmail, name='get_usuario_by_email'),
     path('get/usuario/telefone/<str:telefone>/', views.getUsuarioByTelefone, name='get_usuario_by_telefone'),
+    path('get/usuario/id/<str:id>/', views.getUsuarioById, name='get_usuario_by_id'),
 
     #   VALIDACOES 
     path('validar/usuario/', views.user_validation, name='validacao_usuario')

@@ -80,7 +80,50 @@ def servicos_data(request):
 @user_passes_test(is_gerente_or_atendente)
 def atendimento(request):
     atendimentos = []
-    if request.method == 'POST':
+    if request.method == 'GET':
+        atendimentos_query = Atendimento.objects.filter(situacao=0)
+        for atendimento in atendimentos_query:
+            atendimentos.append({'atendente': atendimento.atendente,
+                                'helper': atendimento.helper,
+                                 'cliente': atendimento.cliente,
+                                 'servico': atendimento.servico,
+                                 'data_hora': atendimento.data_hora,
+                                 'preco': atendimento.preco,
+                                 'situacao': atendimento.situacao,
+                                 'pagamento': atendimento.pagamento,
+                                 'nome_cliente': atendimento.nome_cliente,
+                                 'telefone_cliente': atendimento.telefone_cliente,
+                                 'logradouro_cliente': atendimento.logradouro_cliente,
+                                 'numero_casa_cliente': atendimento.numero_casa_cliente,
+                                 'cidade_cliente': atendimento.cidade_cliente,
+                                 'data_criacao_atendimento': atendimento.data_criacao_atendimento,
+                                 'estado_cliente': atendimento.estado_cliente,
+                                 'id': atendimento.pk})
+            
+    elif request.method == 'PATCH':
+        body_unicode = request.body.decode('utf-8')
+        dados = json.loads(body_unicode)
+        obj = Atendimento.objects.get(pk=dados['id'])
+
+        obj.atendente = dados['atendente']
+        obj.helper = dados['helper']
+        obj.cliente = dados['cliente']
+        obj.servico = dados['servico']
+        obj.data_hora = dados['data_hora']
+        obj.preco = dados['preco']
+        obj.situacao = dados['situacao']
+        obj.pagamento = dados['pagamento']
+        obj.nome_cliente = dados['nome_cliente']
+        obj.telefone_cliente = dados['telefone_cliente']
+        obj.logradouro_cliente = dados['logradouro_cliente']
+        obj.numero_casa_cliente = dados['numero_casa_cliente']
+        obj.cidade_cliente = dados['cidade_cliente']
+        obj.data_criacao_atendimento = dados['data_criacao_atendimento']
+        obj.estado_cliente = dados['estado_cliente']
+
+        obj.save()
+
+    elif request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
         dados = json.loads(body_unicode)
 
@@ -88,15 +131,43 @@ def atendimento(request):
                     helper=dados['helper'],
                     cliente=dados['cliente'],
                     servico=dados['servico'],
-                    data_hora=dados['data-hora'],
+                    data_hora=dados['data_hora'],
                     preco=dados['preco'],
                     situacao=dados['situacao'],
                     pagamento=dados['pagamento'],
-                    nome_cliente=dados['nome-cliente'],
-                    telefone_cliente=dados['telefone-cliente'],
-                    logradouro_cliente=dados['logradouro-cliente'],
-                    numero_casa_cliente=dados['numero-casa-cliente'],
-                    cidade_cliente=dados['cidade-cliente'],
-                    estado_cliente=dados['estado-cliente']).save()
+                    nome_cliente=dados['nome_cliente'],
+                    telefone_cliente=dados['telefone_cliente'],
+                    logradouro_cliente=dados['logradouro_cliente'],
+                    numero_casa_cliente=dados['numero_casa_cliente'],
+                    cidade_cliente=dados['cidade_cliente'],
+                    data_criacao_atendimento=dados['data_criacao_atendimento'],
+                    estado_cliente=dados['estado_cliente']).save()
 
-    return HttpResponse(json.dumps(atendimentos), content_type='application/json;charset=utf-8')
+    return HttpResponse(json.dumps(atendimentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
+
+@login_required(login_url='/auth/login/')
+@user_passes_test(is_gerente_or_atendente)
+def atendimento_by_id(request, id):
+    atendimentos = []
+    if request.method == 'GET':
+        atendimentos_query = Atendimento.objects.filter(pk=id)
+        for atendimento in atendimentos_query:
+            atendimentos.append({'atendente': atendimento.atendente,
+                                'helper': atendimento.helper,
+                                 'cliente': atendimento.cliente,
+                                 'servico': atendimento.servico,
+                                 'data_hora': atendimento.data_hora,
+                                 'preco': atendimento.preco,
+                                 'situacao': atendimento.situacao,
+                                 'pagamento': atendimento.pagamento,
+                                 'nome_cliente': atendimento.nome_cliente,
+                                 'telefone_cliente': atendimento.telefone_cliente,
+                                 'logradouro_cliente': atendimento.logradouro_cliente,
+                                 'numero_casa_cliente': atendimento.numero_casa_cliente,
+                                 'cidade_cliente': atendimento.cidade_cliente,
+                                 'estado_cliente': atendimento.estado_cliente,
+                                 'data_criacao_atendimento': atendimento.data_criacao_atendimento,
+                                 'id': atendimento.pk})
+
+    return HttpResponse(json.dumps(atendimentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')

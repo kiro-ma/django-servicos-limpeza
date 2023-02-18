@@ -25,7 +25,7 @@ function getFormEditarValues(id) {
 
 async function get_servicos() {
     let url = '/principal/servicos/save/';
-    return (await fetchFactory('GET', url, getFormValues()).then(dataReturned => servicoAtual = dataReturned))
+    return (await fetchFactory('GET', url).then(dataReturned => atendimentoAtual = dataReturned))
 }
 
 async function post_servicos() {
@@ -39,6 +39,7 @@ async function patch_servicos() {
     body = getFormEditarValues(rowEditarAtual)
     await fetchFactory('PATCH', url, body)
     preencherTabelaServicos()
+    cancelarEdição()
 }
 
 async function delete_servicos() {
@@ -66,7 +67,7 @@ async function preencherTabelaServicos() {
 }
 
 async function showEditarServicos(row) {
-
+    document.querySelector('#row-criar-servico').classList.add('d-none')
     document.querySelector('#row-editar-servico').classList.remove('d-none')
 
     document.querySelector('#descricao-editar-servico').innerHTML = 'Editar Serviço "' + row[0] + '"'
@@ -79,6 +80,7 @@ async function showEditarServicos(row) {
 
 function cancelarEdição() {
     document.querySelector('#row-editar-servico').classList.add('d-none')
+    document.querySelector('#row-criar-servico').classList.remove('d-none')
     rowEditarAtual = ''
 }
 

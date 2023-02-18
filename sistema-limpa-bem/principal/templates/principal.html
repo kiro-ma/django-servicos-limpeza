@@ -66,24 +66,45 @@
         <div class="card w-75 shadow d-flex align-items-center" style="margin: auto; margin-top: 15px;">
             <div class="card-body w-75">
 
-                <!-- <p>* O serviço escolhido.
+                <div class="row">
+                    <div class="card w-100 col-12" style="padding: 5px; margin-bottom: 15px;">
+                        <div class="card-title">
+                            <h5>Listagem de Atendimentos</h5>
+                        </div>
+                        <table id="table_atendimentos" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID Atendimento</th>
+                                    <th>Atendente</th>
+                                    <th>Helper</th>
+                                    <th>Cliente</th>
+                                    <th>Serviço</th>
+                                    <th>Data Marcada</th>
+                                    <th>Data do Atendimento</th>
+                                    <th>Preço</th>
+                                    <th>Situação</th>
+                                    <th>Pagamento</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Logradouro</th>
+                                    <th>Número</th>
+                                    <th>Cidade</th>
+                                    <th>Estado</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                    * O atendente que fez o cadastro.
-                    * O helper que executou o serviço.
-                    * O valor pago pelo atendimento (os gerentes tem
-                    liberdade para oferecer até 10% de desconto).
-                    * A forma de pagamento usada pelo cliente
-                    * A data e o horário que foi cadastrado o atendimento.
-                    * A data e o horário que vai ocorrer a limpeza.
-                    * A situação (pendente, realizado ou cancelado)
-                    
-                    * Os dados do cliente (nome, telefone e endereço).</p> -->
-
-                <form id="form" accept="#" method="POST" onsubmit="post_atendimento(); return false;">
+                <form id="form" accept="#" method="POST" onsubmit="post_atendimento(); return false;"
+                    style="border: 1px solid blue; border-radius: 5px; padding: 15px;">
                     {% csrf_token %}
                     <div class="row">
                         <div class="card-title col-3">
-                            <h5>Registrar Atendimento</h5>
+                            <h5 style="color: blue;">Registrar Atendimento</h5>
                         </div>
                         <div class="col-3">
                             <h5 id="relogio"></h5>
@@ -91,22 +112,26 @@
                         <div class="col-6">
                             <button class="btn btn-success btn-sm" id="btn-salvar"
                                 form="form"><span>Salvar</span></button>
+                            <button type="button" class="btn btn-warning btn-sm" id="btn-editar-cancelar"
+                                onclick="document.getElementById('form').reset()"><span>Limpar</span></button>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-group col-4">
                             <label for="atendente">Atendente</label>
+
                             <input type="text" required id="id-atendente" name="id-atendente"
                                 style="opacity: 25%; width: 55px;" tabindex="-1">
+
                             <div class="input-group mb-3">
                                 <input required type="text" class="form-control form-control-sm"
                                     placeholder="Pesquisar atendente" aria-label="Pesquisar atendente"
                                     aria-describedby="button-addon2" id="atendente" name="atendente"
-                                    onfocus="this.style = ''">
+                                    onfocus="this.style = ''" onblur="pesquisarCadastro(2, document.getElementById('atendente').value)">
 
                                 <select class="form-select form-control form-control-sm"
-                                    aria-label="Default select example" id="campo_atendente">
+                                    aria-label="Campo a pesquisar Atendente" id="campo_atendente">
                                     <option selected value="0">Username</option>
                                     <option value="1">Nome</option>
                                     <option value="2">E-Mail</option>
@@ -126,10 +151,10 @@
                                 <input required type="text" class="form-control form-control-sm"
                                     placeholder="Pesquisar helper" aria-label="Pesquisar helper"
                                     aria-describedby="button-addon2" id="helper" name="helper"
-                                    onfocus="this.style = ''">
+                                    onfocus="this.style = ''" onblur="pesquisarCadastro(1, document.getElementById('helper').value)">
 
                                 <select class="form-select form-control form-control-sm"
-                                    aria-label="Default select example" id="campo_helper">
+                                    aria-label="Campo a pesquisar Helper" id="campo_helper">
                                     <option selected value="0">Username</option>
                                     <option value="1">Nome</option>
                                     <option value="2">E-Mail</option>
@@ -145,8 +170,9 @@
                             <label for="select_servico">Selecionar serviço</label>
                             <input type="text" required id="id-servico" name="id-servico"
                                 style="opacity: 25%; width: 55px;" tabindex="-1">
+
                             <select class="form-control form-control-sm selectoption" id="select_servico"
-                                name="select_servico" onchange="preencherValorServico(this.value)">
+                                name="select_servico" onchange="preencherValorServico(this.options[this.selectedIndex].text)">
                                 <option value="0">Nenhum</option>
                             </select>
                         </div>
@@ -162,7 +188,8 @@
                                     placeholder="Pesquisar cliente" aria-label="Pesquisar cliente"
                                     aria-describedby="button-addon2" id="cliente" name="cliente"
                                     onfocus="this.style = ''"
-                                    onchange="if(this.value == ''){preencherDadosCliente(true, false)}">
+                                    onchange="if(this.value == ''){preencherDadosCliente(true, false)}"
+                                    onblur="pesquisarCadastro(0, document.getElementById('cliente').value)">
 
                                 <select class="form-select form-control form-control-sm"
                                     aria-label="Default select example" id="campo_cliente">
@@ -285,6 +312,216 @@
                         </div>
                     </div>
                 </form>
+
+                <form id="form-editar" class="d-none" accept="#" method="PATCH"
+                    onsubmit="patch_atendimento(); return false;"
+                    style="border: 1px solid orangered; border-radius: 5px; padding: 15px;">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="card-title col-4">
+                            <h5 style="color: orangered;" id="descricao-editar-atendimento">Editar Atendimento</h5>
+                        </div>
+                        <div class="col-2">
+                            <h5 id="relogio-editar"></h5>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-success btn-sm" id="btn-salvar-editar"
+                                form="form-editar"><span>Salvar</span></button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="btn-editar-cancelar"
+                                onclick="cancelarEdição()"><span>Cancelar</span></button>
+                            <button type="button" class="btn btn-warning btn-sm" id="btn-editar-cancelar"
+                                onclick="document.getElementById('form-editar').reset()"><span>Limpar</span></button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="atendente">Atendente</label>
+                            <input type="text" required id="id-atendente-editar" name="id-atendente-editar"
+                                style="opacity: 25%; width: 55px;" tabindex="-1">
+                            <div class="input-group mb-3">
+                                <input required type="text" class="form-control form-control-sm"
+                                    placeholder="Pesquisar atendente" aria-label="Pesquisar atendente"
+                                    aria-describedby="button-addon2" id="atendente-editar" name="atendente-editar"
+                                    onfocus="this.style = ''">
+
+                                <select class="form-select form-control form-control-sm"
+                                    aria-label="Default select example" id="campo_atendente-editar">
+                                    <option selected value="0">Username</option>
+                                    <option value="1">Nome</option>
+                                    <option value="2">E-Mail</option>
+                                    <option value="3">Telefone</option>
+                                </select>
+
+                                <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    id="pesquisar_atendente-editar"
+                                    onclick="pesquisarCadastro(2, document.getElementById('atendente').value)"><i
+                                        class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="helper">Helper</label>
+                            <input type="text" required id="id-helper-editar" name="id-helper-editar"
+                                style="opacity: 25%; width: 55px;" tabindex="-1">
+                            <div class="input-group mb-3">
+                                <input required type="text" class="form-control form-control-sm"
+                                    placeholder="Pesquisar helper" aria-label="Pesquisar helper"
+                                    aria-describedby="button-addon2" id="helper-editar" name="helper-editar"
+                                    onfocus="this.style = ''">
+
+                                <select class="form-select form-control form-control-sm"
+                                    aria-label="Default select example" id="campo_helper-editar">
+                                    <option selected value="0">Username</option>
+                                    <option value="1">Nome</option>
+                                    <option value="2">E-Mail</option>
+                                    <option value="3">Telefone</option>
+                                </select>
+
+                                <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    id="pesquisar_helper-editar"
+                                    onclick="pesquisarCadastro(1, document.getElementById('helper').value)"><i
+                                        class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="select_servico-editar">Selecionar serviço</label>
+                            <input type="text" required id="id-servico-editar" name="id-servico-editar"
+                                style="opacity: 25%; width: 55px;" tabindex="-1">
+                            <select class="form-control form-control-sm selectoption" id="select_servico-editar"
+                                name="select_servico-editar" onchange="preencherValorServico(this.value)">
+                                <option value="0">Nenhum</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="cliente">Cliente</label>
+                            <input type="text" required id="id-cliente-editar" name="id-cliente-editar"
+                                style="opacity: 25%; width: 55px;" tabindex="-1">
+                            <div class="input-group mb-3">
+                                <input required type="text" class="form-control form-control-sm"
+                                    placeholder="Pesquisar cliente" aria-label="Pesquisar cliente"
+                                    aria-describedby="button-addon2" id="cliente-editar" name="cliente-editar"
+                                    onfocus="this.style = ''"
+                                    onchange="if(this.value == ''){preencherDadosCliente(true, false)}">
+
+                                <select class="form-select form-control form-control-sm"
+                                    aria-label="Default select example" id="campo_cliente-editar">
+                                    <option selected value="0">Username</option>
+                                    <option value="1">Nome</option>
+                                    <option value="2">E-Mail</option>
+                                    <option value="3">Telefone</option>
+                                </select>
+
+                                <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    id="pesquisar_cliente-editar"
+                                    onclick="pesquisarCadastro(0, document.getElementById('cliente').value)"><i
+                                        class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="dth-limpeza">Data/Hora da limpeza</label>
+                            <input type="datetime-local" required class="form-control form-control-sm"
+                                id="dth-limpeza-editar" name="dth-limpeza-editar">
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="preco">Preço</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">R$</span>
+                                <input type="text" class="form-control" aria-label="Valor em reais" id="preco-editar"
+                                    name="preco-editar" readonly="readonly" tabindex="-1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="situacao">Situação</label>
+                            <select class="form-control form-control-sm selectoption" id="situacao-editar"
+                                name="situacao-editar">
+                                <option value="0">Pendente</option>
+                                <option value="1">Realizado</option>
+                                <option value="2">Cancelado</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="pagamento">Forma de pagamento</label>
+                            <select class="form-control form-control-sm selectoption" id="pagamento-editar"
+                                name="pagamento-editar">
+                                <option value="0">PIX</option>
+                                <option value="1">Débito</option>
+                                <option value="2">Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h5>Dados do Cliente</h5>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-4">
+                                    <label for="nome">Nome</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="nome-editar" name="nome-editar" readonly="readonly" tabindex="-1">
+                                    </div>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="telefone">Telefone</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="telefone-editar" name="telefone-editar" readonly="readonly"
+                                            tabindex="-1">
+                                    </div>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="email">Email</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="email-editar" name="email-editar" readonly="readonly" tabindex="-1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label for="logradouro">Logradouro</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="logradouro-editar" name="logradouro-editar" readonly="readonly"
+                                            tabindex="-1">
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label for="numero">Numero</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="numero-editar" name="numero-editar" readonly="readonly" tabindex="-1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label for="cidade">Cidade</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="cidade-editar" name="cidade-editar" readonly="readonly" tabindex="-1">
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label for="estado">Estado</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" aria-label="Valor em reais"
+                                            id="estado-editar" name="estado-editar" readonly="readonly" tabindex="-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -293,6 +530,33 @@
 {% block javascript %}
 <script src="{% static 'js/fetchFactory.js' %}"></script>
 <script src="{% static 'js/principal.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#table_atendimentos').DataTable({
+            scrollY: '200px',
+            scrollX: true,
+            scrollCollapse: true,
+            paging: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ resultados por página",
+                "zeroRecords": "Nada encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "Sem resultados disponíveis",
+                "infoFiltered": "(filtrado de _MAX_ resultados)",
+                "search": "Pesquisar"
+            }, columnDefs: [
+                {
+                    targets: -1,
+                    data: null,
+                    defaultContent: `<button class="btn btn-warning btnEditar" title="Editar"
+                                    type="button"><i class="bi bi-pencil-square"></i></button>`,
+                },
+            ],
+        });
+    });
+</script>
+
 {% endblock %}
 
 </html>

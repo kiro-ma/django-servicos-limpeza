@@ -24,4 +24,5 @@ class Atendimento(models.Model):
     numero_casa_cliente = models.CharField(max_length=50)
     cidade_cliente = models.CharField(max_length=50)
     estado_cliente = models.CharField(max_length=50)
+    data_criacao_atendimento = models.DateTimeField()
 
