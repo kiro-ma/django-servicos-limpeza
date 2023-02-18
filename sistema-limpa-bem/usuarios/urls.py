@@ -7,6 +7,7 @@ urlpatterns = [
 	path('login/', views.login, name = 'login'),
     path('logout/', views.logout_view, name='logout'),
     path('cadastrar/funcionario/', views.cadastrar_funcionario, name='cadastrar_funcionario'),
+    path('cadastrar/cliente/', views.cadastrar_cliente, name='cadastrar_cliente'),
 
     # PEGANDO UM USER, OU TODOS OS USERS
     path('get/usuario/', views.getUsuarios, name='get_usuarios'),

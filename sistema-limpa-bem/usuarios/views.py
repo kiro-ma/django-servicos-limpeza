@@ -133,6 +133,53 @@ def getUsuarioByTelefone(request, telefone):
     return HttpResponse(json.dumps(userDict, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
 
 
+def cadastrar_cliente(request):
+    if request.method == 'GET':
+        page = "Cadastro de funcionarios"
+        return render(request, 'cadastro_clientes.html', {'page': page})
+    else:
+        username = request.POST.get('username')
+        # só é usado pra atribuir um grupo
+        tipo_user = '0'
+        senha = request.POST.get('senha')
+        confirmarSenha = request.POST.get('senha2')
+        telefone = request.POST.get('telefone')
+        email = request.POST.get('email')
+        nome = request.POST.get('nome')
+        sobrenome = request.POST.get('sobrenome')
+        logradouro = request.POST.get('logradouro')
+        numero = request.POST.get('numero')
+        cidade = request.POST.get('cidade')
+        estado = request.POST.get('estado')
+
+        if senha != confirmarSenha:
+            return HttpResponse('Senha incompatível.')
+
+        if len(senha) < 4:
+            return HttpResponse('Senha muito curta, mínimo de quatro caracteres.')
+
+        user = Usuario.objects.filter(username=username).first()
+
+        if user:
+            return HttpResponse('Username já cadastrado.')
+        
+        user = Usuario.objects.filter(email=email).first()
+
+        if user:
+            return HttpResponse('Email já cadastrado.')
+
+        # \/ Pra ser ADM um usuário teria is_staff=True
+        user = Usuario.objects.create_user(username=username, email=email, password=senha, telefone=telefone, first_name=nome,
+                                           last_name=sobrenome, logradouro=logradouro, numero=numero, cidade=cidade, estado=estado, tipo_user=tipo_user)
+
+        group = Group.objects.get(name='Clientes')
+        user.groups.add(group)
+
+        user.save()
+        return render(request, 'login.html')
+
+
+
 @login_required(login_url='/auth/login/')
 @user_passes_test(is_gerente)
 def cadastrar_funcionario(request):
