@@ -27,8 +27,8 @@ async function delete_agendamento(row) {
     await fetchFactory('DELETE', url, data)
 }
 
-async function get_agendamentos() {
-    let url = '/principal/agendamento/save/';
+async function get_agendamentos(id_cliente) {
+    let url = `/principal/agendamento/save/${id_cliente}/`;
     return (await fetchFactory('GET', url, getFormValues()))
 }
 
@@ -65,9 +65,8 @@ async function preencherSelectServicos(editar) {
 }
 
 async function preencherTabelaMeusAgendamentos() {
-    var agendamentos = await get_agendamentos()
+    var agendamentos = await get_agendamentos(document.getElementById('id-cliente').value)
     var t = $('#table_agendamentos').DataTable();
-
     $('#table_agendamentos').DataTable().clear().draw();
     for (let i = 0; i < agendamentos.length; i++) {
         t.row.add([agendamentos[i]['id'], agendamentos[i]['servico'], agendamentos[i]['data_reservada'], agendamentos[i]['data_de_criacao'], agendamentos[i]['valor']]).draw(true)

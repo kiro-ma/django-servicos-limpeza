@@ -8,6 +8,7 @@ urlpatterns = [
     path('servicos/', views.servicos_page, name='principal_servicos_page'),
     path('agendamento/', views.agendamento, name='principal_agendamento'),
     path('agendamento/save/', views.agendamento_data, name='principal_agendamento'),
+    path('agendamento/save/<str:id_cliente>/', views.agendamento_data_by_id, name='principal_agendamento_by_id'),
     path('servicos/save/', views.servicos_data, name='principal_servicos_data'),
     path('servicos/cliente/', views.get_servicos_data, name='principal_get_servicos_data'),
     path('atendimento/save/', views.atendimento, name="principal_atendimento"),

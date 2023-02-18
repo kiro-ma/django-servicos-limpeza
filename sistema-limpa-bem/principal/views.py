@@ -32,6 +32,27 @@ def agendamento(request):
     page = 'Agendamento'
     return render(request, 'agendamento.html', {'page': page})
 
+@login_required(login_url='/auth/login/')
+def agendamento_data_by_id(request, id_cliente):
+    agendamentos = []
+    if request.method == 'GET':
+        agendamentos_query = Agendamento.objects.filter(id_cliente=id_cliente)
+
+        for agendamento in agendamentos_query:
+            agendamentos.append({'id_cliente': agendamento.id_cliente, 'servico': agendamento.servico, 'id': agendamento.pk,
+                                'data_reservada': agendamento.data_reservada, 'data_de_criacao': agendamento.data_de_criacao, 'valor': agendamento.valor})
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        dados = json.loads(body_unicode)
+
+        Agendamento(id_cliente=dados['id_cliente'], servico=dados['servico'],
+                    data_reservada=dados['data_reservada'], data_de_criacao=dados['data_de_criacao'], valor=dados['valor']).save()
+    if request.method == 'DELETE':
+        body_unicode = request.body.decode('utf-8')
+        dados = json.loads(body_unicode)
+        Agendamento.objects.get(pk=dados['id'], id_cliente=id_cliente).delete()
+    return HttpResponse(json.dumps(agendamentos, indent=4, sort_keys=True, default=str), content_type='application/json;charset=utf-8')
+
 
 @login_required(login_url='/auth/login/')
 def agendamento_data(request):
